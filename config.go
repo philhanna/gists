@@ -29,7 +29,7 @@ func GetConfigFileName() string {
 // LoadConfig reads the specified file and produces a configuration
 // structure from it by parsing it as YAML.
 func LoadConfig(filename string) (*Configuration, error) {
-	var config *Configuration
+	config := new(Configuration)
 	body, err := os.ReadFile(filename)
 	if err != nil {
 		return config, err
