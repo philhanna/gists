@@ -41,7 +41,7 @@ func TestLoadConfig(t *testing.T) {
 			} else {
 				assert.Nil(t, err)
 				assert.NotNil(t, config)
-				//assert.Equal(t, tt.wantUsername, config.Username)
+				assert.Equal(t, tt.wantUsername, config.Username)
 			}
 		})
 	}
