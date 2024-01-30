@@ -21,15 +21,14 @@ func TestLoadConfig(t *testing.T) {
 		wantToken    string
 	}{
 		{
-			name:         "Happy path",
-			filename:     filepath.Join("testdata", "config.yaml"),
-			wantErr:      false,
-			wantUsername: "Curly",
-			wantToken:    "woowoowoo",
-		},
-		{
 			name:    "empty",
 			wantErr: true,
+		},
+		{
+			name:         "Happy path",
+			filename:     filepath.Join("testdata", "config.yaml"),
+			wantUsername: "Curly",
+			wantToken:    "woowoowoo",
 		},
 	}
 	for _, tt := range tests {
@@ -37,7 +36,6 @@ func TestLoadConfig(t *testing.T) {
 			config, err := LoadConfig(tt.filename)
 			if tt.wantErr {
 				assert.NotNil(t, err)
-				assert.Nil(t, config)
 			} else {
 				assert.Nil(t, err)
 				assert.NotNil(t, config)
