@@ -1,8 +1,10 @@
 package gists
 
 import (
-	"github.com/stretchr/testify/assert"
+	"path/filepath"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestGetConfigFileName(t *testing.T) {
@@ -17,7 +19,19 @@ func TestLoadConfig(t *testing.T) {
 		wantErr      bool
 		wantUsername string
 		wantToken    string
-	}{}
+	}{
+		{
+			name:         "Happy path",
+			filename:     filepath.Join("testdata", "config.yaml"),
+			wantErr:      false,
+			wantUsername: "Curly",
+			wantToken:    "woowoowoo",
+		},
+		{
+			name:    "empty",
+			wantErr: true,
+		},
+	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			config, err := LoadConfig(tt.filename)
