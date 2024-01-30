@@ -5,17 +5,21 @@ import (
 	"path/filepath"
 )
 
-// ---------------------------------------------------------------------
-// Type definitions
-// ---------------------------------------------------------------------
-
+// Configuration contains the Github username and token
 type Configuration struct {
 	Username string `yaml:"username"`
 	Token    string `yaml:"token"`
 }
 
+const (
+	PACKAGE_NAME     = "get-config"
+	CONFIG_FILE_NAME = "config.yaml"
+)
+
+// GetConfigFileName returns the name of the configuration file for this
+// user
 func GetConfigFileName() string {
 	configDir, _ := os.UserConfigDir()
-	filename := filepath.Join(configDir, "get-config", "config.yaml")
+	filename := filepath.Join(configDir, PACKAGE_NAME, CONFIG_FILE_NAME)
 	return filename
 }
