@@ -17,9 +17,15 @@ const (
 )
 
 // GetConfigFileName returns the name of the configuration file for this
-// user
+// user.
 func GetConfigFileName() string {
 	configDir, _ := os.UserConfigDir()
 	filename := filepath.Join(configDir, PACKAGE_NAME, CONFIG_FILE_NAME)
 	return filename
+}
+
+// LoadConfig reads the specified file and produces a configuration
+// structure from it by parsing it as YAML.
+func LoadConfig(filename string) (*Configuration, error) {
+	return nil, nil
 }
