@@ -1,9 +1,10 @@
 package gists
 
 import (
-	"errors"
 	"os"
 	"path/filepath"
+
+	"gopkg.in/yaml.v3"
 )
 
 // Configuration contains the Github username and token
@@ -28,5 +29,11 @@ func GetConfigFileName() string {
 // LoadConfig reads the specified file and produces a configuration
 // structure from it by parsing it as YAML.
 func LoadConfig(filename string) (*Configuration, error) {
-	return nil, errors.New("dummy error message")
+	var config *Configuration
+	body, err := os.ReadFile(filename)
+	if err != nil {
+		return config, err
+	}
+	err = yaml.Unmarshal(body, config)
+	return config, err
 }
