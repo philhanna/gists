@@ -1,12 +1,11 @@
 package gists
 
 import (
-	"fmt"
+	"github.com/stretchr/testify/assert"
 	"testing"
-	//"github.com/stretchr/testify/assert"
 )
 
 func TestGetConfigFileName(t *testing.T) {
 	filename := GetConfigFileName()
-	fmt.Println(filename)
+	assert.NotEmpty(t, filename)
 }
