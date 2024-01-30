@@ -14,7 +14,7 @@ type Configuration struct {
 }
 
 const (
-	PACKAGE_NAME     = "get-config"
+	PACKAGE_NAME     = "get-gists"
 	CONFIG_FILE_NAME = "config.yaml"
 )
 
