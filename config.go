@@ -1,6 +1,7 @@
 package gists
 
 import (
+	"errors"
 	"os"
 	"path/filepath"
 )
@@ -27,5 +28,5 @@ func GetConfigFileName() string {
 // LoadConfig reads the specified file and produces a configuration
 // structure from it by parsing it as YAML.
 func LoadConfig(filename string) (*Configuration, error) {
-	return nil, nil
+	return nil, errors.New("dummy error message")
 }
