@@ -18,6 +18,7 @@ go install cmd/fs/gists_to_files.go
 Create the configuration file:
 - On Linux/MacOS: `$HOME/.config/gists/config.yaml`
 - On Windows: `%APPDATA%\gists\config.yaml`
+
 with these parameters:
 ```yaml
 username: <your userID>
