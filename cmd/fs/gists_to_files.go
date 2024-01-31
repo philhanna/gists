@@ -71,26 +71,48 @@ func main() {
 		}
 	}
 
+	// Run the download loop
+	err = Run()
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+// forceCreateDirectory prompts the user to indicate whether to delete
+// and recreate the chosen output director.
+func forceCreateDirectory() error {
+	fmt.Printf("Are you sure you want to delete directory %s? (y/N) ", FSROOT)
+	reader := bufio.NewReader(os.Stdin)
+	yesno, _ := reader.ReadString('\n')
+	yesno = strings.TrimSpace(yesno)
+	switch yesno {
+	case "Y", "y":
+		err = os.RemoveAll(FSROOT)
+		if err != nil {
+			return err
+		}
+		err = os.Mkdir(FSROOT, 0755)
+		if err != nil {
+			return err
+		}
+		fmt.Println()
+	default:
+		// Get out
+		err = fmt.Errorf("exit, not deleting %s", FSROOT)
+		return err
+	}
+	// OK
+	return nil
+}
+
+// Run downloads all the gists and writes them to the database
+func Run() error {
+
 	// Create output directory
 	if optForce {
-		fmt.Printf("Are you sure you want to delete directory %s? (y/N) ", FSROOT)
-		reader := bufio.NewReader(os.Stdin)
-		yesno, _ := reader.ReadString('\n')
-		yesno = strings.TrimSpace(yesno)
-		switch yesno {
-		case "Y", "y":
-			err = os.RemoveAll(FSROOT)
-			if err != nil {
-				log.Fatal(err)
-			}
-			err = os.Mkdir(FSROOT, 0755)
-			if err != nil {
-				log.Fatal(err)
-			}
-			fmt.Println()
-		default:
-			// Get out
-			log.Fatalf("Exit, not deleting %s", FSROOT)
+		err = forceCreateDirectory()
+		if err != nil {
+			return err
 		}
 	}
 
@@ -98,7 +120,7 @@ func main() {
 	log.Printf("Opening %s for input", DBFILE)
 	db, err := sql.Open("sqlite3", DBFILE)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 	defer db.Close()
 
@@ -113,7 +135,7 @@ ORDER BY	g.created_at
 `
 	rows, err := db.Query(sql)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 	defer rows.Close()
 
@@ -132,14 +154,14 @@ ORDER BY	g.created_at
 		// Read a gist file record
 		err = rows.Scan(&id, &filename, &description, &created_at, &language, &size, &contents)
 		if err != nil {
-			log.Fatal(err)
+			return err
 		}
 
 		// Create a directory to contain it
 		dirPath := filepath.Join(FSROOT, created_at)
 		err = os.Mkdir(dirPath, 0755)
 		if err != nil {
-			log.Fatal(err)
+			return err
 		}
 
 		// Write the file contents to the directory
@@ -147,14 +169,14 @@ ORDER BY	g.created_at
 		log.Printf("Writing %q to %q\n", filename, dirPath)
 		err = os.WriteFile(gistFileName, contents, 0644)
 		if err != nil {
-			log.Fatal(err)
+			return err
 		}
 
 		// Write the metadata to the directory in JSON format
 		mdFileName := filepath.Join(dirPath, "metadata.json")
 		fp, err := os.Create(mdFileName)
 		if err != nil {
-			log.Fatal(err)
+			return err
 		}
 		defer fp.Close()
 		fmt.Fprintf(fp, "{\n")
@@ -164,4 +186,6 @@ ORDER BY	g.created_at
 		fmt.Fprintf(fp, "  %q : %d\n", "Size", size)
 		fmt.Fprintf(fp, "}\n")
 	}
+
+	return nil
 }
