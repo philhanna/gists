@@ -10,7 +10,7 @@ import (
 
 // CreateDatabase reads gists from a channel and writes them
 // to an SQLite3 database.
-func CreateDatabase(filename string, ch chan Gist) error {
+func CreateDatabase(filename string) error {
 
 	// Delete the output database file, if it exists
 	if FileExists(filename) {
@@ -29,6 +29,7 @@ func CreateDatabase(filename string, ch chan Gist) error {
 	if err != nil {
 		return err
 	}
+
 	createTablesSQL := `
 CREATE TABLE gists (
     id          TEXT,
@@ -50,31 +51,12 @@ CREATE TABLE gistfiles (
 		return err
 	}
 
-	// Write gists to table
-	for gist := range ch {
-		insertSQL := `INSERT INTO gists (id, url, description, created_at) VALUES(?, ?, ?, ?)`
-		_, err := tx.Exec(insertSQL, gist.ID, gist.URL, gist.Description, gist.CreatedAt)
-		if err != nil {
-			return err
-		}
-		for _, file := range gist.Files {
-			blob, err := file.GetContents()
-			if err != nil {
-				return err
-			}
-			insertSQL = `INSERT INTO gistfiles (id, filename, language, size, contents) VALUES(?, ?, ?, ?, ?)`
-			_, err = tx.Exec(insertSQL, gist.ID, file.Filename, file.Language, file.Size, blob)
-			if err != nil {
-				return err
-			}
-		}
-	}
-
 	// Commit the transaction
 	err = tx.Commit()
 	if err != nil {
 		return err
 	}
+
 	return nil
 }
 
@@ -87,4 +69,41 @@ func FileExists(filename string) bool {
 	}
 	_, err := os.Stat(filename)
 	return !os.IsNotExist(err)
+}
+
+// LoadDatabase writes a gist to the database
+func LoadDatabase(db *sql.DB, gist Gist) error {
+
+	// Begin a transaction
+	tx, err := db.Begin()
+	if err != nil {
+		return err
+	}
+
+	// Write gists to tables
+	insertSQL := `INSERT INTO gists (id, url, description, created_at) VALUES(?, ?, ?, ?)`
+	_, err = tx.Exec(insertSQL, gist.ID, gist.URL, gist.Description, gist.CreatedAt)
+	if err != nil {
+		return err
+	}
+	for _, file := range gist.Files {
+		blob, err := file.GetContents()
+		if err != nil {
+			return err
+		}
+		insertSQL = `INSERT INTO gistfiles (id, filename, language, size, contents) VALUES(?, ?, ?, ?, ?)`
+		_, err = tx.Exec(insertSQL, gist.ID, file.Filename, file.Language, file.Size, blob)
+		if err != nil {
+			return err
+		}
+	}
+
+	// Commit the transaction
+	err = tx.Commit()
+	if err != nil {
+		return err
+	}
+
+	// No error
+	return nil
 }
