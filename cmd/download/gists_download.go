@@ -19,6 +19,7 @@ func init() {
 	}))
 	slog.SetDefault(logger)
 }
+
 func main() {
 
 	// Create an empty database
