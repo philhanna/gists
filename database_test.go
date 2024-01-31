@@ -9,12 +9,12 @@ import (
 
 func TestCreateDatabase(t *testing.T) {
 	tests := []struct {
-		name          string
-		dbFileName    string
+		name       string
+		dbFileName string
 	}{
 		{
-			name:          "Happy path",
-			dbFileName:    "/tmp/gists.db",
+			name:       "Happy path",
+			dbFileName: "/tmp/gists.db",
 		},
 	}
 	for _, tt := range tests {

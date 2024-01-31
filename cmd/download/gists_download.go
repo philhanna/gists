@@ -18,6 +18,7 @@ positional arguments:
   DBFILE         database file name
 `
 )
+
 var (
 	DBFILE string
 )
@@ -57,7 +58,7 @@ func main() {
 		log.Fatal(err)
 	}
 	slog.Info("Created empty database", "file name", filename)
-	
+
 	// Open the database for output
 	db, err := sql.Open("sqlite3", filename)
 	if err != nil {
