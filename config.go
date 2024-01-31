@@ -1,6 +1,7 @@
 package gists
 
 import (
+	"log"
 	"os"
 	"path/filepath"
 
@@ -17,6 +18,18 @@ const (
 	PACKAGE_NAME     = "get-gists"
 	CONFIG_FILE_NAME = "config.yaml"
 )
+
+var Config *Configuration
+
+// Preload the configuration
+func init() {
+	var err error
+	filename := GetConfigFileName()
+	Config, err = LoadConfig(filename)
+	if err != nil {
+		log.Fatal(err)
+	}
+}
 
 // GetConfigFileName returns the name of the configuration file for this
 // user.
