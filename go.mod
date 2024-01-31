@@ -3,6 +3,7 @@ module gists
 go 1.21.6
 
 require (
+	github.com/mattn/go-sqlite3 v1.14.20
 	github.com/stretchr/testify v1.8.4
 	gopkg.in/yaml.v3 v3.0.1
 )
