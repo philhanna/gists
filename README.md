@@ -1,4 +1,7 @@
 # Gists
+[![Go Report Card](https://goreportcard.com/badge/github.com/philhanna/gists)][idGoReportCard]
+[![PkgGoDev](https://pkg.go.dev/badge/github.com/philhanna/gists)][idPkgGoDev]
+
 
 A program to download all the user's gists from Github
 
@@ -23,3 +26,6 @@ token: <a github token for this user>
 
 See the [Github documentation](https://docs.github.com/en/enterprise-server@3.9/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens) for
 details about how to create a Github access token.
+
+[idGoReportCard]: https://goreportcard.com/report/github.com/philhanna/gists
+[idPkgGoDev]: https://pkg.go.dev/github.com/philhanna/gists
