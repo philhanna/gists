@@ -44,6 +44,13 @@ CREATE TABLE gistfiles (
     size        TEXT,
     contents    BLOB
 );
+CREATE VIEW joined AS
+    SELECT      g.id, f.filename, f.language, g.description, f.contents
+    FROM        gistfiles f
+    LEFT JOIN   gists g
+    ON          f.id = g.id
+    ORDER BY    4
+    ;
 `
 	// Create the tables
 	_, err = tx.Exec(createTablesSQL)

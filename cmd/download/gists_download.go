@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"database/sql"
 	"flag"
 	"fmt"
@@ -8,6 +9,7 @@ import (
 	"log"
 	"log/slog"
 	"os"
+	"strings"
 )
 
 const (
@@ -16,11 +18,16 @@ Downloads this user's gists from Github into an SQLite3 database
 
 positional arguments:
   DBFILE         database file name
+
+options:
+  -f, --force    create new database if old one exists
 `
 )
 
 var (
-	DBFILE string
+	err      error
+	optForce bool
+	DBFILE   string
 )
 
 func init() {
@@ -40,6 +47,8 @@ func main() {
 	}
 
 	// Parse the flags
+	flag.BoolVar(&optForce, "f", false, "Create new databse if old one exists")
+	flag.BoolVar(&optForce, "force", false, "Create new databse if old one exists")
 	flag.Parse()
 
 	// Verify command line arguments
@@ -49,6 +58,30 @@ func main() {
 		log.Fatalln("Try --help for help")
 	default:
 		DBFILE = flag.Arg(0)
+		if optForce {
+			if gists.FileExists(DBFILE) {
+				fmt.Printf("Are you sure you want to delete database %s? (y/N) ", DBFILE)
+				reader := bufio.NewReader(os.Stdin)
+				yesno, _ := reader.ReadString('\n')
+				yesno = strings.TrimSpace(yesno)
+				switch yesno {
+				case "Y", "y":
+					err = os.Remove(DBFILE)
+					if err != nil {
+						log.Fatal(err)
+					}
+					fmt.Println()
+				default:
+					// Get out
+					log.Fatalf("Exit, not deleting %s", DBFILE)
+				}
+			}
+		}
+	}
+
+	// Die if database already exists
+	if gists.FileExists(DBFILE) {
+		log.Fatalf("Database file %s already exists\n", DBFILE)
 	}
 
 	// Create an empty database
