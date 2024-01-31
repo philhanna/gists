@@ -2,11 +2,28 @@ package gists
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
+	"strings"
 )
 
 type Gist struct {
-	URL string `json:"url,omitempty"`
+	ID          string              `json:"id,omitempty"`
+	URL         string              `json:"url,omitempty"`
+	Description string              `json:"description,omitempty"`
+	CreatedAt   string              `json:"created_at"`
+	Files       map[string]GistFile `json:"files,omitempty"`
+}
+
+func (g Gist) String() string {
+	parts := make([]string, 0)
+	parts = append(parts, fmt.Sprintf("ID: %q", g.ID))
+	parts = append(parts, fmt.Sprintf("Description: %q", g.Description))
+	for _, gistFile := range g.Files {
+		parts = append(parts, fmt.Sprintf("File:\n\t%s", gistFile))
+	}
+	return strings.Join(parts, "\n")
+
 }
 
 // GetGists accepts a string containing a JSON array of gists
