@@ -5,13 +5,13 @@ import (
 	"database/sql"
 	"flag"
 	"fmt"
-	"gists"
 	"log"
 	"os"
 	"path/filepath"
 	"strings"
 
 	_ "github.com/mattn/go-sqlite3"
+	"github.com/philhanna/gists"
 )
 
 const (

@@ -1,4 +1,4 @@
-module gists
+module github.com/philhanna/gists
 
 go 1.21.6
 

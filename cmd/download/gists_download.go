@@ -5,11 +5,12 @@ import (
 	"database/sql"
 	"flag"
 	"fmt"
-	"gists"
 	"log"
 	"log/slog"
 	"os"
 	"strings"
+
+	"github.com/philhanna/gists"
 )
 
 const (
