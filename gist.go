@@ -11,12 +11,12 @@ type Gist struct {
 
 // GetGists accepts a string containing a JSON array of gists
 // and passes the individual gists back through a channel.
-func GetGists(array string) chan Gist {
+func GetGists(jsonstr string) chan Gist {
 	ch := make(chan Gist, 10)
 	go func() {
 		defer close(ch)
 		var gists []Gist
-		err := json.Unmarshal([]byte(array), &gists)
+		err := json.Unmarshal([]byte(jsonstr), &gists)
 		if err != nil {
 			log.Fatal(err)
 		}
